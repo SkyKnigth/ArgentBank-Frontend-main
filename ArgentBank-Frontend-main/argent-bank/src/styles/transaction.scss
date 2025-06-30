@@ -1,0 +1,29 @@
+.transactions {
+  color: white;
+
+  .transaction-details {
+    margin: 2rem auto;
+    max-width: 600px;
+    background: white;
+    padding: 2rem;
+    color: black;
+  }
+
+  .transaction-item {
+    border-top: 1px solid #ccc;
+    padding: 1rem 0;
+
+    .transaction-info {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .transaction-amount-status {
+      margin-top: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      font-size: 0.9rem;
+    }
+  }
+}
