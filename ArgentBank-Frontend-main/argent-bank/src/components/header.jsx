@@ -1,16 +1,17 @@
+import React from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../Redux/authSlice'
 import logo from '../assets/argentBankLogo.png'
-import '../styles/header.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPowerOff } from '@fortawesome/free-solid-svg-icons'
+import { faCircleUser, faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons'
+import '../styles/header.scss'
 
-function Header() {
+export default function Header() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const token = useSelector((state) => state.auth.token)
-  const user = useSelector((state) => state.auth.user)
+  const token = useSelector((s) => s.auth.token)
+  const user = useSelector((s) => s.auth.user)
 
   const handleLogout = () => {
     dispatch(logout())
@@ -20,30 +21,25 @@ function Header() {
   return (
     <nav className="main-nav">
       <NavLink to="/" className="main-nav-logo">
-        <img className="main-nav-logo-image" src={logo} alt="Argent Bank Logo" />
+        <img src={logo} alt="Argent Bank Logo" className="main-nav-logo-image" />
         <h1 className="sr-only">Argent Bank</h1>
       </NavLink>
-
-      <div>
+      <div className="main-nav-items">
         {token ? (
           <>
-            {user?.userName && (
-              <NavLink to="/profile" className="main-nav-item">
-                <i className="fa fa-user-circle"></i> {user.userName}
-              </NavLink>
-            )}
-            <button className="main-nav-item" onClick={handleLogout}>
-              <FontAwesomeIcon icon={faPowerOff} />
+            <NavLink to="/profile" className="main-nav-item">
+              <FontAwesomeIcon icon={faCircleUser} /> {user?.firstName}
+            </NavLink>
+            <button className="main-nav-item" onClick={handleLogout} aria-label="Sign Out">
+              <FontAwesomeIcon icon={faArrowRightFromBracket} /> Sign Out
             </button>
           </>
         ) : (
-          <NavLink className="main-nav-item" to="/login">
-            <i className="fa fa-user-circle"></i> Sign In
+          <NavLink to="/login" className="main-nav-item">
+            <FontAwesomeIcon icon={faCircleUser} /> Sign In
           </NavLink>
         )}
       </div>
     </nav>
   )
 }
-
-export default Header

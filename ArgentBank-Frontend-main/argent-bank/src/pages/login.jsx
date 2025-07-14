@@ -1,20 +1,23 @@
+import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { useState } from 'react'
-import { loginSuccess } from '../Redux/authSlice'
-import { loginUser } from '../API/api' 
 import { useNavigate } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleUser } from '@fortawesome/free-solid-svg-icons'
+import { loginSuccess } from '../Redux/authSlice'
+import { loginUser } from '../API/api'
+import '../styles/login.scss'
 
 function Login() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const token = await loginUser(email, password)
+      const token = await loginUser(username, password)
       dispatch(loginSuccess({ token }))
       navigate('/profile')
     // eslint-disable-next-line no-unused-vars
@@ -26,19 +29,37 @@ function Login() {
   return (
     <main className="main bg-dark">
       <section className="sign-in-content">
-        <i className="fa fa-user-circle sign-in-icon"></i>
+        <FontAwesomeIcon icon={faCircleUser} className="sign-in-icon" />
         <h1>Sign In</h1>
         <form onSubmit={handleSubmit}>
           <div className="input-wrapper">
-            <label>Email</label>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <label htmlFor="username">Username</label>
+            <input
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
           </div>
           <div className="input-wrapper">
-            <label>Password</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
           </div>
-          <button type="submit" className="sign-in-button">Sign In</button>
-          {error && <p style={{ color: 'red' }}>{error}</p>}
+          <div className="input-remember">
+            <input type="checkbox" id="remember-me" />
+            <label htmlFor="remember-me">Remember me</label>
+          </div>
+          <button type="submit" className="sign-in-button">
+            Sign In
+          </button>
+          {error && <p className="sign-in-error">{error}</p>}
         </form>
       </section>
     </main>

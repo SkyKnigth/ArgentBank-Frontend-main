@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { getUserProfile, updateUserName } from '../API/api'
-import { setUser } from '../Redux/authSlice'
-import EditName from '../components/editname'
+import { setUser, logout } from '../Redux/authSlice'
+import EditName from '../components/EditName'
 import '../styles/profile.scss'
 
-function Profile() {
+export default function Profile() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const token = useSelector((state) => state.auth.token)
@@ -18,27 +18,19 @@ function Profile() {
       navigate('/login')
       return
     }
-
-    const fetchProfile = async () => {
-      try {
-        const userData = await getUserProfile(token)
-        dispatch(setUser(userData))
-      } catch (err) {
-        console.error(err)
-      }
-    }
-
-    fetchProfile()
+    getUserProfile(token)
+      .then((u) => dispatch(setUser(u)))
+      .catch((err) => console.error('Error fetching profile:', err))
   }, [token, dispatch, navigate])
+
 
   const handleSave = async (newName) => {
     try {
-      const updatedUser = await updateUserName(token, newName)
-      dispatch(setUser(updatedUser))
+      const updated = await updateUserName(token, newName)
+      dispatch(setUser(updated))
       setIsEditing(false)
-    // eslint-disable-next-line no-unused-vars
     } catch (err) {
-      console.error('Erreur lors de la mise à jour du pseudo')
+      console.error('Error updating username:', err)
     }
   }
 
@@ -46,10 +38,47 @@ function Profile() {
     setIsEditing(false)
   }
 
+  const handleLogout = () => {
+    dispatch(logout())
+    navigate('/login')
+  }
+
+
+  const accounts = [
+    {
+      title: 'Argent Bank Checking (x8349)',
+      amount: '$2,082.79',
+      desc: 'Available Balance',
+    },
+    {
+      title: 'Argent Bank Savings (x6712)',
+      amount: '$10,928.42',
+      desc: 'Available Balance',
+    },
+    {
+      title: 'Argent Bank Credit Card (x8349)',
+      amount: '$184.30',
+      desc: 'Current Balance',
+    },
+  ]
+
   return (
-    <main className="main bg-white">
-      <div className="header">
-        {isEditing ? (
+    <main className="main bg-dark profile">
+      <section className="profile-header">
+        {!isEditing ? (
+          <>
+            <h1>
+              Welcome back<br />
+              {user?.firstName} {user?.lastName}!
+            </h1>
+            <button
+              className="edit-button"
+              onClick={() => setIsEditing(true)}
+            >
+              Edit Name
+            </button>
+          </>
+        ) : (
           <EditName
             currentName={user?.userName || ''}
             firstName={user?.firstName || ''}
@@ -57,50 +86,27 @@ function Profile() {
             onSave={handleSave}
             onCancel={handleCancel}
           />
-        ) : (
-          <>
-            <h1>Welcome back<br />{user?.userName}!</h1>
-            <button className="edit-button" onClick={() => setIsEditing(true)}>
-              Edit Name
-            </button>
-          </>
         )}
-      </div>
+      </section>
 
       <h2 className="sr-only">Accounts</h2>
-
-      {[
-        {
-          title: 'Argent Bank Checking (x8349)',
-          amount: '$2,082.79',
-          description: 'Available Balance',
-        },
-        {
-          title: 'Argent Bank Savings (x6712)',
-          amount: '$10,928.42',
-          description: 'Available Balance',
-        },
-        {
-          title: 'Argent Bank Credit Card (x8349)',
-          amount: '$184.30',
-          description: 'Current Balance',
-        },
-      ].map((account, index) => (
-        <section className="account" key={index}>
-          <div className="account-content-wrapper">
-            <h3 className="account-title">{account.title}</h3>
-            <p className="account-amount">{account.amount}</p>
-            <p className="account-amount-description">{account.description}</p>
-          </div>
-          <div className="account-content-wrapper cta">
-            <button className="transaction-button">
-              <i className="fa fa-chevron-right" />
+      <section className="accounts">
+        {accounts.map((acc, idx) => (
+          <div className="account" key={idx}>
+            <div className="account-content">
+              <h3>{acc.title}</h3>
+              <p className="amount">{acc.amount}</p>
+              <p className="desc">{acc.desc}</p>
+            </div>
+            <button
+              className="transaction-button"
+              onClick={handleLogout}
+            >
+              View transactions
             </button>
           </div>
-        </section>
-      ))}
+        ))}
+      </section>
     </main>
   )
 }
-
-export default Profile

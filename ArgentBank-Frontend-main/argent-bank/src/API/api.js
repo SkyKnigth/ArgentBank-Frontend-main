@@ -17,7 +17,7 @@ export async function loginUser(email, password) {
 
 export async function getUserProfile(token) {
   const response = await fetch('http://localhost:3001/api/v1/user/profile', {
-    method: 'POST',
+    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`, 
