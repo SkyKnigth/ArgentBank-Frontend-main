@@ -27,9 +27,11 @@ export default function Header() {
       <div className="main-nav-items">
         {token ? (
           <>
+           {user?.userName && (
             <NavLink to="/profile" className="main-nav-item">
-              <FontAwesomeIcon icon={faCircleUser} /> {user?.firstName}
+              <FontAwesomeIcon icon={faCircleUser} /> {user.userName}
             </NavLink>
+            )}
             <button className="main-nav-item" onClick={handleLogout} aria-label="Sign Out">
               <FontAwesomeIcon icon={faArrowRightFromBracket} /> Sign Out
             </button>

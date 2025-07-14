@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { getUserProfile, updateUserName } from '../API/api'
-import { setUser, logout } from '../Redux/authSlice'
+import { setUser, logout, updateUsernameSuccess } from '../Redux/authSlice'
 import EditName from '../components/EditName'
 import '../styles/profile.scss'
 
@@ -26,8 +26,8 @@ export default function Profile() {
 
   const handleSave = async (newName) => {
     try {
-      const updated = await updateUserName(token, newName)
-      dispatch(setUser(updated))
+      await updateUserName(token, newName)
+      dispatch(updateUsernameSuccess(newName))
       setIsEditing(false)
     } catch (err) {
       console.error('Error updating username:', err)
