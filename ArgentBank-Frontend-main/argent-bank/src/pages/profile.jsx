@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { getUserProfile, updateUserName } from '../API/api'
-import { setUser, logout, updateUsernameSuccess } from '../Redux/authSlice'
+import { setUser, updateUsernameSuccess } from '../Redux/authSlice'
 import EditName from '../components/EditName'
 import '../styles/profile.scss'
 
@@ -38,10 +38,7 @@ export default function Profile() {
     setIsEditing(false)
   }
 
-  const handleLogout = () => {
-    dispatch(logout())
-    navigate('/login')
-  }
+
 
 
   const accounts = [
@@ -100,7 +97,7 @@ export default function Profile() {
             </div>
             <button
               className="transaction-button"
-              onClick={handleLogout}
+               onClick={() => navigate('/transactions')}
             >
               View transactions
             </button>
